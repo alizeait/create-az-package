@@ -86,7 +86,9 @@ async function copyTemplate(
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
-    const destPath = path.join(dest, entry.name);
+    // Rename 'gitignore' to '.gitignore' when copying
+    const destName = entry.name === 'gitignore' ? '.gitignore' : entry.name;
+    const destPath = path.join(dest, destName);
 
     if (entry.isDirectory()) {
       await fs.mkdir(destPath, { recursive: true });

@@ -62,6 +62,11 @@ to create a new token with "Automation" permissions.
 
 2.  **Add the token to your repository**: Add the token as a secret named `NPM_TOKEN` in your repository's settings. This will allow Changesets to publish packages to NPM on your behalf.
 
+3.  **Allow GitHub Actions to create and approve pull requests**: To allow
+Changesets to create and approve pull requests, go to
+`https://github.com/YOUR_REPOSITORY/settings/actions` and check `Allow GitHub
+Actions to create and approve pull requests`.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file
