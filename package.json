@@ -1,6 +1,6 @@
 {
   "name": "create-az-package",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "📦 Scaffold TypeScript packages with pnpm, tsup, vitest, oxlint, prettier, and changesets versioning",
   "type": "module",
   "scripts": {
