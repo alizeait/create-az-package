@@ -1,0 +1,63 @@
+{
+  "name": "create-az-package",
+  "version": "0.1.0",
+  "description": "📦 Scaffold TypeScript packages with pnpm, tsup, vitest, oxlint, prettier, and changesets versioning",
+  "type": "module",
+  "scripts": {
+    "build": "tsup && node scripts/copy-templates.js",
+    "test": "pnpm build && vitest run",
+    "lint": "oxlint",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check-types": "tsc --noEmit",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish"
+  },
+  "bin": {
+    "create-package": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "scaffold",
+    "template",
+    "npm",
+    "package",
+    "typescript",
+    "vitest",
+    "changesets"
+  ],
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.5.1",
+    "@changesets/cli": "^2.29.7",
+    "@types/node": "^22.9.0",
+    "@types/validate-npm-package-name": "^4.0.2",
+    "oxlint": "^1.24.0",
+    "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.1"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.11.0",
+    "picocolors": "^1.1.1",
+    "sade": "^1.8.1",
+    "validate-npm-package-name": "^7.0.0"
+  },
+  "author": "https://github.com/alizeait",
+  "repository": {
+    "url": "https://github.com/alizeait/create-az-package",
+    "type": "git"
+  },
+  "bugs": {
+    "url": "https://github.com/alizeait/create-az-package/issues"
+  },
+  "homepage": "https://github.com/alizeait/create-az-package#readme",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@10.19.0"
+}
