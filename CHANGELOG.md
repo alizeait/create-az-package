@@ -1,5 +1,11 @@
 # create-az-package
 
+## 0.1.2
+
+### Patch Changes
+
+- [#3](https://github.com/alizeait/create-az-package/pull/3) [`6c108db`](https://github.com/alizeait/create-az-package/commit/6c108db1ed5759c30e5a018bdb99384dceb07364) Thanks [@alizeait](https://github.com/alizeait)! - Handle `.gitignore` getting ignored and not published by npm
+
 ## 0.1.1
 
 ### Patch Changes
