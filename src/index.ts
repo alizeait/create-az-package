@@ -199,6 +199,13 @@ async function createPackage(
       title: 'Initializing git repository',
       task: async () => {
         await exec('git init -b master', projectPath);
+        // Configure git for CI environments that might not have it set
+        try {
+          await exec('git config user.email "ci@example.com"', projectPath);
+          await exec('git config user.name "CI"', projectPath);
+        } catch {
+          // Ignore if git config fails (user already has global config)
+        }
         await exec('git add .', projectPath);
         await exec('git commit -m "Initial commit"', projectPath);
         await setTimeout(2000);
