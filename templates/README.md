@@ -5,11 +5,17 @@
 ## Installation
 
 ```bash
+pnpm add {{PACKAGE_NAME}}
+```
+
+Or using other package managers:
+
+```bash
 npm install {{PACKAGE_NAME}}
-
 # or
-
 yarn add {{PACKAGE_NAME}}
+# or
+bun add {{PACKAGE_NAME}}
 ```
 
 ## Usage
@@ -23,28 +29,21 @@ example();
 ## Development
 
 ```bash
-
 # Install dependencies
-
-yarn install
+pnpm install
 
 # Run tests
-
-yarn test
+pnpm test
 
 # Build
+pnpm build
 
-yarn build
+# Check types
+pnpm check-types
 
 # Lint
-
-yarn lint
+pnpm lint
 
 # Format
-
-yarn format
+pnpm format
 ```
-
-## License
-
-MIT
