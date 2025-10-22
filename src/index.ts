@@ -26,7 +26,21 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const templatesDir = path.join(__dirname, 'templates');
 
 async function exec(command: string, cwd?: string) {
-  await execAsync(command, { cwd });
+  try {
+    const { stdout, stderr } = await execAsync(command, { cwd });
+    return { stdout, stderr };
+  } catch (error: any) {
+    // Enhance error with stdout/stderr for better debugging
+    const stdout = error.stdout?.toString() || '';
+    const stderr = error.stderr?.toString() || '';
+    const output = [stdout, stderr].filter(Boolean).join('\n').trim();
+
+    const enhancedError = new Error(
+      `Command failed: ${command}\n${output ? `\nOutput:\n${output}` : ''}`,
+    );
+    enhancedError.cause = error;
+    throw enhancedError;
+  }
 }
 
 function replaceVariables(
@@ -173,43 +187,77 @@ async function createPackage(
       title: 'Setting up project structure',
       task: async () => {
         try {
-          await fs.access(projectPath);
-          log.error(`Directory ${color.cyan(projectPath)} already exists`);
-          process.exit(1);
-        } catch {
-          // Directory doesn't exist, which is what we want
+          try {
+            await fs.access(projectPath);
+            log.error(`Directory ${color.cyan(projectPath)} already exists`);
+            process.exit(1);
+          } catch {
+            // Directory doesn't exist, which is what we want
+          }
+
+          await setTimeout(2000);
+
+          await fs.mkdir(projectPath, { recursive: true });
+          await copyTemplate(templatesDir, projectPath, variables);
+          return 'Project structure created';
+        } catch (error: any) {
+          log.error(error.message);
+          throw error;
         }
-
-        await setTimeout(2000);
-
-        await fs.mkdir(projectPath, { recursive: true });
-        await copyTemplate(templatesDir, projectPath, variables);
-        return 'Project structure created';
       },
     },
     {
       title: 'Installing dependencies via pnpm',
       task: async () => {
-        await exec('corepack enable', projectPath);
-        await exec('pnpm install', projectPath);
-        return 'Dependencies installed';
+        try {
+          await exec('corepack enable', projectPath);
+          await exec('pnpm install', projectPath);
+          return 'Dependencies installed';
+        } catch (error: any) {
+          log.error(error.message);
+          throw error;
+        }
       },
     },
     {
       title: 'Initializing git repository',
       task: async () => {
-        await exec('git init -b master', projectPath);
-        // Configure git for CI environments that might not have it set
         try {
-          await exec('git config user.email "ci@example.com"', projectPath);
-          await exec('git config user.name "CI"', projectPath);
-        } catch {
-          // Ignore if git config fails (user already has global config)
+          await exec('git init -b master', projectPath);
+          // Configure git for CI environments that might not have it set
+          try {
+            const { stdout: existingEmail } = await exec(
+              'git config user.email',
+              projectPath,
+            );
+            if (!existingEmail.trim()) {
+              await exec('git config user.email "ci@example.com"', projectPath);
+            }
+          } catch {
+            // No email configured, set a default
+            await exec('git config user.email "ci@example.com"', projectPath);
+          }
+
+          try {
+            const { stdout: existingName } = await exec(
+              'git config user.name',
+              projectPath,
+            );
+            if (!existingName.trim()) {
+              await exec('git config user.name "CI"', projectPath);
+            }
+          } catch {
+            // No name configured, set a default
+            await exec('git config user.name "CI"', projectPath);
+          }
+          await exec('git add .', projectPath);
+          await exec('git commit -m "Initial commit"', projectPath);
+          await setTimeout(2000);
+          return 'Git repository initialized';
+        } catch (error: any) {
+          log.error(error.message);
+          throw error;
         }
-        await exec('git add .', projectPath);
-        await exec('git commit -m "Initial commit"', projectPath);
-        await setTimeout(2000);
-        return 'Git repository initialized';
       },
     },
   ]);
